@@ -186,7 +186,7 @@ public:
 	void Eliminate ( 
 		const PointType *inputPoints, 
 		SIZE_TYPE        inputSize, 
-		PointType       *outputPoints, 
+		SIZE_TYPE       *outputPoints,
 		SIZE_TYPE        outputSize, 
 		bool             progressive,
 		FType            d_max,
@@ -198,22 +198,22 @@ public:
 		assert( dimensions <= DIMENSIONS && dimensions >= 2 );
 		if ( d_max <= FType(0) ) d_max = 2 * GetMaxPoissonDiskRadius( dimensions, outputSize );
 		DoEliminate( inputPoints, inputSize, outputPoints, outputSize, d_max, weightFunction, false );
-		if ( progressive ) {
-			std::vector<PointType> tmpPoints( outputSize );
-			PointType *inPts  = outputPoints;
-			PointType *outPts = tmpPoints.data();
-			SIZE_TYPE inSize  = outputSize;
-			SIZE_TYPE outSize = 0;
-			while ( inSize >= 3 ) {
-				outSize = inSize / 2;
-				d_max *= ProgressiveRadiusMultiplier( dimensions );
-				DoEliminate( inPts, inSize, outPts, outSize, d_max, weightFunction, true );
-				if ( outPts != outputPoints ) CY_MEMCOPY( PointType, outputPoints+outSize, outPts+outSize, inSize-outSize );
-				PointType *tmpPts = inPts; inPts = outPts; outPts = tmpPts;
-				inSize = outSize;
-			}
-			if ( inPts != outputPoints ) CY_MEMCOPY( PointType, outputPoints, inPts, outSize );
-		}
+//		if ( progressive ) {
+//			std::vector<PointType> tmpPoints( outputSize );
+//			PointType *inPts  = outputPoints;
+//			PointType *outPts = tmpPoints.data();
+//			SIZE_TYPE inSize  = outputSize;
+//			SIZE_TYPE outSize = 0;
+//			while ( inSize >= 3 ) {
+//				outSize = inSize / 2;
+//				d_max *= ProgressiveRadiusMultiplier( dimensions );
+//				DoEliminate( inPts, inSize, outPts, outSize, d_max, weightFunction, true );
+//				if ( outPts != outputPoints ) CY_MEMCOPY( PointType, outputPoints+outSize, outPts+outSize, inSize-outSize );
+//				PointType *tmpPts = inPts; inPts = outPts; outPts = tmpPts;
+//				inSize = outSize;
+//			}
+//			if ( inPts != outputPoints ) CY_MEMCOPY( PointType, outputPoints, inPts, outSize );
+//		}
 	}
 
 	//! This is the main method that uses weighted sample elimination for selecting a subset of samples
@@ -236,7 +236,7 @@ public:
 	void Eliminate ( 
 		const PointType *inputPoints, 
 		SIZE_TYPE        inputSize, 
-		PointType       *outputPoints, 
+		SIZE_TYPE       *outputPoints,
 		SIZE_TYPE        outputSize, 
 		bool             progressive = false,
 		FType            d_max = FType(0),
@@ -327,7 +327,7 @@ private:
 	void DoEliminate( 
 		const PointType *inputPoints, 
 		SIZE_TYPE        inputSize, 
-		PointType       *outputPoints, 
+		SIZE_TYPE       *outputPoints,
 		SIZE_TYPE        outputSize, 
 		FType            d_max,
 		WeightFunction   weightFunction,
@@ -388,7 +388,7 @@ private:
 		// Copy the samples to the output array
 		SIZE_TYPE targetSize = copyEliminated ? inputSize : outputSize;
 		for ( SIZE_TYPE i=0; i<targetSize; i++ ) {
-			outputPoints[i] = inputPoints[ heap.GetIDFromHeap(i) ];
+			outputPoints[i] = heap.GetIDFromHeap(i);
 		}
 	}
 
